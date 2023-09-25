@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+     <title> "Semantic Search Using Sentance Transformer and FAISS"  </title>
+     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}" />
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body bgcolor='DarkGrey'.>
+<div class="header" id="myHeader">
+  <h1>Welcome to Semantic Search  </h1>
+</div>
+<script>
+window.onscroll = function() {myFunction()};
+
+var header = document.getElementById("myHeader");
+var sticky = header.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+  } else {
+    header.classList.remove("sticky");
+  }
+}
+</script>
+
+    
+    <form>
+
+        <div id="chatbox">
+                <p class="botText"><span>Hi! I am your Search Partner. Ask your Question...</span></p>
+        </div>
+        <div id="userInput" class="row">
+            <div class="col-md-10">
+		 <label>Please enter the incident-description</label>
+		 <input id="text" type="text" name="msg" placeholder="Type your query here" size="50" class="form-control"><br><br>
+                 <button type="submit" id="send" class="btn btn-warning">Search</button>
+            </div>
+        </div>
+    </form>
+<script>
+    $(document).ready(function() {
+        $("form").on("submit", function(event) {
+            var rawText = $("#text").val();
+            //var policy = document.getElementByClassName("form-check-input")[1].textContent
+	    var policy = "Test";
+          
+            var userHtml = '<p class="userText"><span>' + rawText + "</span></p>";
+            $("#text").val("");
+            $("#chatbox").append(userHtml);
+            document.getElementById("userInput").scrollIntoView({
+                block: "start",
+                behavior: "smooth",
+            });
+            $.ajax({
+                data: {
+                    msg: rawText,
+                    sex : policy,
+                },
+                type: "POST",
+                url: "/get",
+            }).done(function(data) {
+			    var botHtml = '<p class="botText"><span><b>' + data + "</span></p><br>";
+                $("#chatbox").append($.parseHTML(botHtml));
+                document.getElementById("userInput").scrollIntoView({
+                    block: "start",
+                    behavior: "smooth",
+                });
+            });
+            event.preventDefault();
+        });
+    });
+</script>
+</body>
+
+</html>
+
